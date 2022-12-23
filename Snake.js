@@ -1,15 +1,11 @@
 import { Entity } from "./Entity.js";
 
 export class Snake extends Entity {
-  speed = 1;
   lastKeyPress = null;
+  body = [];
 
   constructor() {
     super();
-    this.x = 0;
-    this.y = 300;
-      // this.x = Math.round(ev.clientX / this.tileSize) * this.tileSize;
-      // this.y = Math.round(ev.clientY / this.tileSize) * this.tileSize;
     window.addEventListener("keydown", (ev) => {
       this.lastKeyPress = ev.key;
     });
@@ -19,24 +15,34 @@ export class Snake extends Entity {
    * @param {CanvasRenderingContext2D} ctx
    */
   draw(ctx) {
-    ctx.fillStyle = "#ffff00";
-    ctx.fillRect(this.x, this.y, this.tileSize, this.tileSize);
     this.handleControls();
+    this.body[0] = {
+      x: this.x,
+      y: this.y,
+    };
+    ctx.fillStyle = "#ffff00";
+    for (let i = 0; i < this.body.length; i++) {
+      ctx.fillRect(
+        this.body[i].x,
+        this.body[i].y,
+        this.tileSize,
+        this.tileSize
+      );
+    }
   }
 
   handleControls() {
     if (this.lastKeyPress === "w") {
-      // this.y -= this.speed * this.tileSize;
-      this.y = Math.round((this.y - this.speed) / this.tileSize) * this.tileSize;
+      this.y -= this.tileSize;
     }
     if (this.lastKeyPress === "s") {
-      this.y += this.speed * this.tileSize;
+      this.y += this.tileSize;
     }
     if (this.lastKeyPress === "a") {
-      this.x -= this.speed * this.tileSize;
+      this.x -= this.tileSize;
     }
     if (this.lastKeyPress === "d") {
-      this.x += this.speed * this.tileSize;
+      this.x += this.tileSize;
     }
   }
 }

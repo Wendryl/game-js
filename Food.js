@@ -6,9 +6,6 @@ export class Food extends Entity {
    */
   constructor(canvas) {
     super();
-    this.x = Math.floor(Math.random() * canvas.width);
-    this.y = Math.floor(Math.random() * canvas.height);
-    console.log(this.x);
   }
 
   /**
