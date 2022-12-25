@@ -36,14 +36,27 @@ export class Game {
   }
 
   draw() {
-    this.handleColisions();
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.ctx.fillStyle = "#000000";
-    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    try {
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      this.ctx.fillStyle = "#000000";
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-    this.food.draw(this.ctx);
-    this.snake.draw(this.ctx);
-    this.handleColisions();
+      this.food.draw(this.ctx);
+      this.snake.draw(this.ctx);
+      this.handleColisions();
+    } catch (e) {
+      this.ctx.fillStyle = "#000000";
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+      this.ctx.fillStyle = "#ff0000";
+      this.ctx.font = "50px sans";
+      this.ctx.fillText(
+        "Game Over",
+        this.canvas.width / 2 - 150,
+        this.canvas.height / 2
+      );
+      clearInterval(this.gameInterval);
+    }
   }
 
   handleColisions() {
@@ -54,7 +67,6 @@ export class Game {
         x: Math.floor(Math.random() * this.tileSize),
         y: Math.floor(Math.random() * this.tileSize),
       };
-      console.log(this.snake.body);
     }
 
     if (
@@ -63,8 +75,17 @@ export class Game {
       this.snake.y >= this.canvas.height ||
       this.snake.y <= 0 - this.tileSize
     ) {
-      clearInterval(this.gameInterval);
+      throw new Error("snake wall colision");
     }
+
+    const bodyColision = this.snake.body.some(
+      (p, i) =>
+        p.x === this.snake.position.x &&
+        p.y === this.snake.position.y &&
+        i !== 0
+    );
+
+    if (bodyColision) throw new Error("snake self colision");
 
     this.snake.body.unshift(this.snake.position);
   }
